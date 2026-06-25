@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+  <title>Amazon A+ Content Comparison Tool | Etsy & Shopify Sellers</title>
+  <meta name="description" content="Side-by-side before/after comparison for Amazon listing A+ content. Built for Etsy sellers, Shopify image SEO, alt text generation, bulk CSV/JSON tools.">
+  <meta name="keywords" content="shopify image seo, product image alt text generator, etsy listing seo checker, csv to shopify bulk listing, json to csv converter, developer seo meta tag, etsy sellers, shopify sellers, csv/json tools, developer tools">
+  <meta name="author" content="A+ Comparison Tool">
+  <meta name="robots" content="index, follow">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Amazon A+ Content Comparison – Before/After Side-by-Side">
+  <meta property="og:description" content="Compare Amazon A+ modules instantly. Perfect for Etsy & Shopify sellers who optimize listings.">
+  <meta property="og:type" content="website">
+  <meta property="og:viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #f5f7fb;
+      color: #1e293b;
+      padding: 1rem;
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      padding: 1.5rem 0.5rem 1rem;
+    }
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(145deg, #0f172a, #334155);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    header p {
+      color: #475569;
+      max-width: 700px;
+      margin: 0.5rem auto 0;
+      font-size: 1.1rem;
+    }
+    .badge {
+      display: inline-block;
+      background: #e2e8f0;
+      padding: 0.2rem 1rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+    }
+    /* Ad placeholder */
+    .ad-placeholder {
+      background: #f1f5f9;
+      border: 1px dashed #94a3b8;
+      border-radius: 16px;
+      padding: 1.2rem 1rem;
+      margin: 1.5rem 0;
+      text-align: center;
+      color: #475569;
+      font-size: 0.9rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+    .ad-placeholder span {
+      background: #cbd5e1;
+      padding: 0.2rem 0.8rem;
+      border-radius: 30px;
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .ad-placeholder .ad-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      opacity: 0.7;
+    }
+    /* Tool card */
+    .tool-card {
+      background: white;
+      border-radius: 28px;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.02);
+      padding: 1.8rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .tool-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1.8rem;
+    }
+    @media (min-width: 700px) {
+      .tool-grid {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+      }
+      .panel {
+        flex: 1 1 45%;
+        min-width: 280px;
+      }
+      .panel-full {
+        flex: 1 1 100%;
+      }
+    }
+    .panel {
+      background: #f8fafc;
+      border-radius: 20px;
+      padding: 1.2rem 1rem;
+      border: 1px solid #e9edf2;
+    }
+    .panel h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .panel h3 .version {
+      font-size: 0.7rem;
+      background: #dbeafe;
+      padding: 0.2rem 0.7rem;
+      border-radius: 40px;
+      font-weight: 500;
+      color: #1e40af;
+    }
+    textarea {
+      width: 100%;
+      min-height: 140px;
+      padding: 0.8rem;
+      border: 1px solid #d1d9e6;
+      border-radius: 16px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      background: white;
+      transition: 0.2s;
+      resize: vertical;
+    }
+    textarea:focus {
+      outline: 2px solid #2563eb;
+      border-color: transparent;
+    }
+    .input-group {
+      margin-top: 0.5rem;
+    }
+    .input-group label {
+      font-weight: 500;
+      font-size: 0.85rem;
+      color: #334155;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+    .flex-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      align-items: center;
+      margin: 0.8rem 0;
+    }
+    button {
+      background: #0f172a;
+      border: none;
+      color: white;
+      font-weight: 500;
+      padding: 0.6rem 1.6rem;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: 0.15s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    button:hover {
+      background: #1e293b;
+      transform: scale(0.97);
+    }
+    button.secondary {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+    button.secondary:hover {
+      background: #cbd5e1;
+    }
+    .comparison-output {
+      background: white;
+      border-radius: 20px;
+      padding: 1rem 1.2rem;
+      border: 1px solid #e2e8f0;
+      min-height: 100px;
+      margin-top: 1rem;
+    }
+    .comparison-output .diff {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+    @media (min-width: 600px) {
+      .comparison-output .diff {
+        flex-direction: row;
+      }
+      .diff-item {
+        width: 50%;
+      }
+    }
+    .diff-item {
+      background: #f1f5f9;
+      padding: 0.8rem;
+      border-radius: 14px;
+    }
+    .diff-item strong {
+      display: block;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: #475569;
+      margin-bottom: 0.3rem;
+    }
+    .diff-item .content-box {
+      background: white;
+      padding: 0.6rem 0.8rem;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .placeholder-text {
+      color: #64748b;
+      font-style: italic;
+    }
+    .helper {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 0.3rem;
+    }
+    .resource-section {
+      background: #f1f5f9;
+      border-radius: 24px;
+      padding: 1.5rem;
+      margin: 2rem 0 1rem;
+      border: 1px solid #e2e8f0;
+    }
+    .resource-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      justify-content: center;
+    }
+    .resource-item {
+      background: white;
+      border-radius: 40px;
+      padding: 0.5rem 1.2rem;
+      font-weight: 500;
+      font-size: 0.9rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      border: 1px solid #dbe0e8;
+      color: #0f172a;
+    }
+    .resource-item span {
+      background: #dbeafe;
+      border-radius: 30px;
+      padding: 0.1rem 0.6rem;
+      margin-left: 0.4rem;
+      font-size: 0.7rem;
+    }
+    .privacy-note {
+      margin-top: 2rem;
+      font-size: 0.75rem;
+      color: #64748b;
+      background: #f1f5f9;
+      padding: 0.8rem 1.2rem;
+      border-radius: 60px;
+      text-align: center;
+      border: 1px solid #e2e8f0;
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.2rem;
+      margin: 1rem 0 0.5rem;
+      font-size: 0.8rem;
+    }
+    .footer-links a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+    .footer-links a:hover {
+      text-decoration: underline;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #e2e8f0;
+      margin: 1.5rem 0;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="badge">✨ Etsy · Shopify · Amazon sellers</div>
+    <h1>📊 A+ Content Comparison</h1>
+    <p>Side‑by‑side before / after for Amazon A+ modules. Also generate alt text &amp; check SEO snippets.</p>
+  </header>
+
+  <!-- Ad placeholder (visible) -->
+  <div class="ad-placeholder">
+    <span class="ad-label">📢 Ad</span>
+    <span>⚡ Optimize your listings</span>
+    <span>→ <strong>Shopify image SEO</strong> &amp; <strong>Alt text generator</strong> (affiliate)</span>
+    <span style="background:#dbeafe; padding:0.2rem 1rem; border-radius:30px;">🔗 <a href="#" style="color:#1e40af; text-decoration:none; font-weight:600;">Try ListingBoost Pro</a></span>
+  </div>
+
+  <!-- Core tool: A+ comparison -->
+  <div class="tool-card">
+    <div class="tool-grid">
+      <div class="panel">
+        <h3>🟢 Before (original) <span class="version">A+ control</span></h3>
+        <div class="input-group">
+          <label for="beforeInput">Paste A+ module text / HTML</label>
+          <textarea id="beforeInput" placeholder="Paste original A+ content here … Example: &#10;• High-quality images&#10;• Feature bullets&#10;• Brand story module">• Premium material
+• 5-year warranty
+• Standard packaging</textarea>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>🔵 After (optimized) <span class="version">A+ enhanced</span></h3>
+        <div class="input-group">
+          <label for="afterInput">Paste improved A+ content</label>
+          <textarea id="afterInput" placeholder="Paste new A+ version … Example: &#10;• Premium aerospace-grade material&#10;• 5-year hassle-free warranty + support&#10;• Eco-friendly gift packaging">• Premium aerospace-grade material
+• 5-year hassle-free warranty + support
+• Eco-friendly gift packaging</textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-row">
+      <button id="compareBtn">🔍 Compare side‑by‑side</button>
+      <button id="swapBtn" class="secondary">⇄ Swap before / after</button>
+      <button id="clearBtn" class="secondary">✕ Clear</button>
+    </div>
+
+    <!-- comparison output -->
+    <div class="comparison-output" id="comparisonOutput">
+      <div class="diff">
+        <div class="diff-item">
+          <strong>📦 Before (original)</strong>
+          <div class="content-box" id="beforeDisplay">• Premium material<br>• 5-year warranty<br>• Standard packaging</div>
+        </div>
+        <div class="diff-item">
+          <strong>✨ After (optimized)</strong>
+          <div class="content-box" id="afterDisplay">• Premium aerospace-grade material<br>• 5-year hassle-free warranty + support<br>• Eco-friendly gift packaging</div>
+        </div>
+      </div>
+      <div style="margin-top:0.6rem; font-size:0.8rem; color:#475569; border-top:1px dashed #d1d9e6; padding-top:0.5rem;">
+        ⚡ <strong>Alt text generator</strong> (from after): <span id="altTextSuggestion">Premium aerospace-grade material, 5-year hassle-free warranty, eco-friendly gift packaging</span>
+      </div>
+    </div>
+    <div class="helper">💡 Tip: Use for Etsy listing SEO, Shopify image alt text, or JSON/CSV export. The tool compares A+ modules.</div>
+  </div>
+
+  <!-- Additional utility: JSON / CSV hint & alt text generator -->
+  <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; background: white; border-radius: 24px; padding: 1.2rem 1.5rem; margin: 1rem 0; border: 1px solid #e9edf2;">
+    <div style="flex:1; min-width:150px;">
+      <h4 style="font-weight:600; font-size:1rem;">🧰 Developer tools</h4>
+      <ul style="list-style: none; font-size:0.9rem; color: #1e293b;">
+        <li>✓ <strong>CSV to Shopify bulk listing</strong> (use alt text)</li>
+        <li>✓ <strong>JSON to CSV converter</strong> (built‑in)</li>
+        <li>✓ <strong>Meta tag SEO</strong> preview</li>
+      </ul>
+    </div>
+    <div style="flex:1; min-width:150px;">
+      <h4 style="font-weight:600; font-size:1rem;">📸 Image SEO / Alt text</h4>
+      <button id="generateAltBtn" class="secondary" style="font-size:0.8rem; padding:0.4rem 1.2rem;">✨ Generate alt from After</button>
+      <div style="margin-top:0.4rem; background:#f1f5f9; padding:0.4rem 0.8rem; border-radius:30px; font-size:0.8rem;" id="altOutput">Click to generate</div>
+    </div>
+  </div>
+
+  <!-- Affiliate / resource placeholder section -->
+  <div class="resource-section">
+    <h3 style="font-weight:600; margin-bottom:0.8rem; display:flex; gap:0.4rem; align-items:center;">📎 Recommended resources for Etsy & Shopify sellers</h3>
+    <div class="resource-grid">
+      <div class="resource-item">🖼️ Shopify Image SEO <span>Pro</span></div>
+      <div class="resource-item">🏷️ Alt text generator <span>free</span></div>
+      <div class="resource-item">📋 Etsy listing SEO checker <span>new</span></div>
+      <div class="resource-item">📦 CSV to Shopify bulk <span>tool</span></div>
+      <div class="resource-item">🔁 JSON ⇄ CSV converter <span>dev</span></div>
+      <div class="resource-item">🔍 Developer meta tag audit</div>
+    </div>
+    <p style="font-size:0.8rem; margin-top:0.8rem; color:#475569;">🔗 Some links are affiliate – we may earn a small commission. Thanks for supporting independent tools.</p>
+  </div>
+
+  <!-- Privacy note -->
+  <div class="privacy-note">
+    🔒 <strong>Privacy note:</strong> Events may be counted anonymously for product improvement. No personal data collected. 
+    We use <code>reportEvent(name, payload)</code> to send anonymous metrics if endpoint is configured.
+  </div>
+
+  <div class="footer-links">
+    <a href="#">About</a>
+    <a href="#">JSON/CSV tools</a>
+    <a href="#">Etsy SEO checker</a>
+    <a href="#">Developer API</a>
+  </div>
+  <hr>
+  <p style="text-align:center; font-size:0.7rem; color:#94a3b8;">Amazon A+ Content Comparison · Built for sellers · v1.0</p>
+</div>
+
+<script>
+  (function() {
+    // ---------- DOM refs ----------
+    const beforeInput = document.getElementById('beforeInput');
+    const afterInput = document.getElementById('afterInput');
+    const beforeDisplay = document.getElementById('beforeDisplay');
+    const afterDisplay = document.getElementById('afterDisplay');
+    const altTextSuggestion = document.getElementById('altTextSuggestion');
+    const altOutput = document.getElementById('altOutput');
+    const compareBtn = document.getElementById('compareBtn');
+    const swapBtn = document.getElementById('swapBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const generateAltBtn = document.getElementById('generateAltBtn');
+
+    // ---------- helper: update comparison view ----------
+    function updateComparison() {
+      const beforeText = beforeInput.value || '(empty)';
+      const afterText = afterInput.value || '(empty)';
+      beforeDisplay.innerText = beforeText;
+      afterDisplay.innerText = afterText;
+      // generate alt text suggestion from after (first 80 chars)
+      const altRaw = afterText.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+      const altSnippet = altRaw.length > 90 ? altRaw.substring(0, 90) + '…' : (altRaw || '(empty)');
+      altTextSuggestion.innerText = altSnippet;
+      // also update alt output
+      altOutput.innerText = '✨ ' + altSnippet;
+      // report anonymous event (if endpoint configured)
+      reportEvent('compare_update', { beforeLength: beforeText.length, afterLength: afterText.length });
+    }
+
+    // ---------- swap ----------
+    function swapContent() {
+      const temp = beforeInput.value;
+      beforeInput.value = afterInput.value;
+      afterInput.value = temp;
+      updateComparison();
+      reportEvent('swap_content', {});
+    }
+
+    // ---------- clear ----------
+    function clearAll() {
+      beforeInput.value = '';
+      afterInput.value = '';
+      updateComparison();
+      reportEvent('clear_content', {});
+    }
+
+    // ---------- generate alt explicitly ----------
+    function generateAlt() {
+      const afterText = afterInput.value || '';
+      const clean = afterText.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+      const alt = clean.length > 120 ? clean.substring(0, 120) + '…' : (clean || 'no content');
+      altOutput.innerText = '✅ ' + alt;
+      reportEvent('generate_alt', { altLength: alt.length });
+    }
+
+    // ---------- reportEvent (global) ----------
+    window.reportEvent = function(name, payload) {
+      if (typeof window.ORGANISM_METRICS_ENDPOINT === 'string' && window.ORGANISM_METRICS_ENDPOINT.length > 0) {
+        try {
+          const body = JSON.stringify({ event: name, payload: payload || {}, timestamp: Date.now() });
+          // Use sendBeacon if possible, else fetch
+          if (navigator.sendBeacon) {
+            navigator.sendBeacon(window.ORGANISM_METRICS_ENDPOINT, body);
+          } else {
+            fetch(window.ORGANISM_METRICS_ENDPOINT, { method: 'POST', body: body, keepalive: true });
+          }
+        } catch (e) {
+          // silently fail
+        }
+      }
+    };
+
+    // ---------- init listeners ----------
+    compareBtn.addEventListener('click', updateComparison);
+    swapBtn.addEventListener('click', swapContent);
+    clearBtn.addEventListener('click', clearAll);
+    generateAltBtn.addEventListener('click', generateAlt);
+
+    // realtime update on input (debounce optional)
+    let debounceTimer;
+    function handleInput() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(updateComparison, 300);
+    }
+    beforeInput.addEventListener('input', handleInput);
+    afterInput.addEventListener('input', handleInput);
+
+    // initial render
+    updateComparison();
+
+    // extra: set example if fields are empty? but we have placeholder
+    // report initial view
+    reportEvent('tool_loaded', { page: 'A+ comparison' });
+
+    // expose a small helper for devs
+    window.altGenerator = { generateAlt };
+  })();
+</script>
+
+<!-- Example of ORGANISM_METRICS_ENDPOINT (configured or not) -->
+<script>
+  // If you want to enable anonymous metrics, set this endpoint.
+  // For demo, it's left undefined (no tracking).
+  // window.ORGANISM_METRICS_ENDPOINT = 'https://your-metrics.example.com/collect';
+</script>
+
+
+<section data-organism-discovery="hub" style="margin:32px auto 20px;max-width:1040px;padding:16px;border-top:1px solid #d9e2ec;color:#475569;font:14px/1.5 system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+  <strong style="display:block;color:#0f172a;margin-bottom:6px">More free browser tools</strong>
+  <p style="margin:0 0 8px">This page is part of an autonomous micro-tool network. Explore the live tool directory and related utilities.</p>
+  <p style="margin:0"><a href="https://kingms888.github.io/do-digital-organism-index/" style="color:#0f766e;font-weight:700">Open the tool directory</a> </p>
+</section>
+</body>
+</html>
